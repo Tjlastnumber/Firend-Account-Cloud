@@ -1,0 +1,47 @@
+<!--index.wxml-->
+<view id="header" class="body body-scale">
+  <view class="section">
+    <picker mode="date" fields="month" bindchange="bindDateChange">
+      <view class="picker">
+        {{date}}
+      </view>
+    </picker>
+    <i class="arrow"></i>
+  </view>
+  <day-select year="{{selectedYear}}" 
+              month="{{selectedMonth}}" 
+              day="{{currentDay}}" 
+              tags="{{[31]}}" 
+              bindselectedDay="_selectedDay"/>
+</view>
+
+<view style="background: white; margin: {{bodyHeight + 10}}px 0 0 0;">
+  <view id="chart" class="chart"> 
+    <canvas class="lineCanvas" canvas-id="lineCanvas" disable-scroll="true" class="canvas" style="width: 100%; --chartHeight: {{chartHeight}}px"></canvas>
+  </view>
+</view>
+<view class='card'>
+  <view class='left'>
+    <count-up class="income" startVal="0" endVal="{{income}}" decimals="2" duration="1"></count-up>
+  </view>
+  <view class="right">
+    <count-up class="expend" startVal="0" endVal="{{expenses}}" decimals="2" duration="1"></count-up>
+  </view>
+</view>
+
+<view class="detail-list" style="opacity: {{details.length > 0 ? 1 : 0}}">
+  <text class="title">当日明细</text>
+  <ul>
+    <li wx:key="{{item.key}}" class="{{item.val.type < 0 ? 'expenses-item' : 'income-item'}}" wx:for="{{details}}">
+      <view class="detail-left">
+        <text class="detail-title">{{item.val.name}}</text>
+        <text class="detail-sub">{{item.val.type > 0 ? '收入': '支出'}}</text>
+      </view>
+      <text class="amount">{{item.val.amount}}</text>
+    </li>
+  </ul>
+</view>
+
+<footer class="footer" bindtap="navToAccountInput">
+  <text> 添加账目 </text> 
+</footer>

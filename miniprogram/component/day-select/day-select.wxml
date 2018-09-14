@@ -1,0 +1,17 @@
+<!--component/day-select/day-select.wxml-->
+<scroll-view scroll-x
+             scroll-with-animation
+             class="day-select" 
+             scroll-into-view="{{ 'd-' + ((selectedDay - 3) <= 0 ? 1 : (selectedDay - 3)) }}">
+  <view class="day-item {{selectedDay == item.day ? 'selected': ''}}" 
+        id="{{item.id}}"
+        wx:for="{{everyDay}}"
+        wx:key="{{item.id}}"
+        data-item="{{item}}"
+        bindtap="_selectDay">
+        {{item.day}}
+    <block wx:if="{{item.tag}}">
+      <i></i>
+    </block>
+  </view> 
+</scroll-view>
