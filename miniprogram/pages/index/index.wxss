@@ -16,11 +16,11 @@ page {
 .section {
     padding: 16rpx 0;
     background: white;
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    display: flex;
 }
 
 .card {
@@ -215,7 +215,7 @@ page {
 
 .footer {
     position: fixed;
-    height: 40px;
+    height: 60px;
     width: 100%;
     border-top: 1px solid #e0e0e0;
     background: #6244ee;

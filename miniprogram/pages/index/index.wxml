@@ -29,9 +29,9 @@
   </view>
 </view>
 
-<view class="detail-list" style="opacity: {{details.length > 0 ? 1 : 0}}">
+<view class="detail-list">
   <text class="title">当日明细</text>
-  <ul>
+  <ul style="opacity: {{details.length > 0 ? 1 : 0}}">
     <li wx:key="{{item.key}}" class="{{item.val.type < 0 ? 'expenses-item' : 'income-item'}}" wx:for="{{details}}">
       <view class="detail-left">
         <text class="detail-title">{{item.val.name}}</text>

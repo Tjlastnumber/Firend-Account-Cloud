@@ -10,6 +10,16 @@ App({
       })
     }
 
-    this.globalData = {}
+    this.globalData = {
+      development: false 
+    }
+
+    this.log = text => {
+      if (this.globalData.development) console.log(text)
+    }
+
+    this.error = text => {
+      if (this.globalData.development) console.error(text)
+    }
   }
 })

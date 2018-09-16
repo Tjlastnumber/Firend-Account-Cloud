@@ -23,7 +23,7 @@ Page({
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         checked: true,
         date: util.formatTime(new Date()),
-        account: new modules.Account(), 
+        account: new modules.Account(),
         income: 0,
         expenses: 0,
         details: [],
@@ -60,7 +60,7 @@ Page({
     //     }
     //   });
     // },
-    createSimulationData: function() {
+    createSimulationData: function () {
         var categories = [];
         var data = [];
         for (var i = 0; i < 12; i++) {
@@ -72,12 +72,12 @@ Page({
             data: data
         }
     },
-    updateData: function() {
+    updateData: function () {
         var simulationData = this.createSimulationData();
         var series = [{
             name: '收入',
             data: simulationData.data,
-            format: function(val, name) {
+            format: function (val, name) {
                 return val.toFixed(2) + '万';
             }
         }];
@@ -87,22 +87,13 @@ Page({
         });
     },
     //事件处理函数
-    bindViewTap: function() {
+    bindViewTap: function () {
         wx.navigateTo({
             url: '../logs/logs'
         })
     },
-    onLoad: function() {
-        setTimeout(() => {
-            wx.createSelectorQuery()
-                .in(this)
-                .select('#header')
-                .boundingClientRect(res => {
-                    this.setData({
-                        bodyHeight: res.height
-                    })
-                }).exec()
-        }, 1500);
+    onLoad: function () {
+        app.log('onLoad')
 
         /**
        *    if (app.globalData.userInfo) {
@@ -134,6 +125,7 @@ Page({
         this.createChart();
     },
     onShow() {
+        app.log('onShow')
         let accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
         this.setData({
             accountCollection: accountCollection
@@ -149,6 +141,20 @@ Page({
             })
         }, 1000);
     },
+    onReady() {
+        app.log('index onReady')
+
+        setTimeout(() => {
+            wx.createSelectorQuery()
+                .in(this)
+                .select('#header')
+                .boundingClientRect(res => {
+                    this.setData({
+                        bodyHeight: res.height
+                    })
+                }).exec()
+        }, 1500);
+    },
     onPageScroll(e) {
         var maxH = 150
         var height = e.scrollTop > 75 ? 0 : maxH
@@ -156,7 +162,7 @@ Page({
             chartHeight: height
         })
     },
-    getUserInfo: function(e) {
+    getUserInfo: function (e) {
         app.globalData.userInfo = e.detail.userInfo
         this.setData({
             userInfo: e.detail.userInfo,
@@ -169,7 +175,7 @@ Page({
             var res = wx.getSystemInfoSync();
             windowWidth = res.windowWidth;
         } catch (e) {
-            console.error('getSystemInfoSync failed!');
+            app.error('getSystemInfoSync failed!');
         }
 
         var simulationData = this.createSimulationData();
@@ -182,13 +188,13 @@ Page({
             series: [{
                 name: '收入',
                 data: simulationData.data,
-                format: function(val, name) {
+                format: function (val, name) {
                     return val.toFixed(2) + '元';
                 }
             }, {
                 name: '支出',
                 data: [2, 0, 0, 3, null, 4, 0, 0, 2, 0],
-                format: function(val, name) {
+                format: function (val, name) {
                     return val.toFixed(2) + '元';
                 }
             }],
@@ -196,7 +202,7 @@ Page({
                 disableGrid: true
             },
             yAxis: {
-                format: function(val) {
+                format: function (val) {
                     return val.toFixed(2);
                 },
                 min: 0
@@ -219,7 +225,7 @@ Page({
             month: month,
             day: day
         }) || new modules.Account()
-        let details = Object.keys(account.details).map(key => ({key, val: account.details[key]}))
+        let details = Object.keys(account.details).map(key => ({ key, val: account.details[key] }))
         this.setData({
             currentDay: day,
             account: account,
@@ -232,11 +238,11 @@ Page({
         let query = 'year=' + this.data.selectedYear + '&month=' + this.data.selectedMonth + '&day=' + this.data.currentDay
         wx.navigateTo({
             url: '../account-input/account-input?' + query,
-            success: function(res) {
+            success: function (res) {
             },
-            fail: function() {
+            fail: function () {
             },
-            complete: function() {
+            complete: function () {
             }
         })
     }

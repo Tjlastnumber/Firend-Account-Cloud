@@ -33,6 +33,20 @@ const today = () => {
   }
 }
 
+const weekList = [
+  '日',
+  '一',
+  '二',
+  '三',
+  '四',
+  '五',
+  '六'
+]
+const toWeek = (v) => {
+  let i = toNumber(v)
+  return weekList[i]
+} 
+
 const isObject = (obj) => {
   return obj !== null && typeof obj === 'object'
 }
@@ -47,5 +61,6 @@ module.exports = {
   today: today,
   isObject: isObject,
   toNumber: toNumber,
-  isEmpty: isEmpty
+  isEmpty: isEmpty,
+  toWeek: toWeek
 }

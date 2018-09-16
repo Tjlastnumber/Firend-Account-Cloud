@@ -1,5 +1,7 @@
 // component/count-up.js
-var cu = require('../../utils/countUp.js');
+const cu = require('../../utils/countUp.js');
+const app = getApp()
+
 Component({
   /**
    * 组件的属性列表
@@ -49,9 +51,9 @@ Component({
         countUp.start(() => {
           this.updateFontSize()
         })
-        console.log(this.data.count)
+        app.log(this.data.count)
       } else {
-        console.error(countUp.error)
+        app.error(countUp.error)
       }
     },
     updateFontSize() {

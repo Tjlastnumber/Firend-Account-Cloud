@@ -1,6 +1,8 @@
 // component/day-select/day-select.js
 const uitls = require('../../utils/util.js')
-const today = new Date()
+const today = uitls.today()
+const app = getApp()
+
 
 Component({
   /**
@@ -9,21 +11,17 @@ Component({
   properties: {
     year: {
       type: Number,
-      value: today.getFullYear(),
+      value: today.year,
       observer() {
         this._initDay()
       }
     },
     month: {
       type: Number,
-      value: today.getMonth() + 1,
+      value: today.month,
       observer() {
         this._initDay()
       }
-    },
-    tags: {
-      type: Array,
-      value: []
     },
     day: {
       type: String,
@@ -33,7 +31,11 @@ Component({
           selectedDay: newVal
         })
       }
-    }
+    },
+    tags: {
+      type: Array,
+      value: []
+    },
   },
 
   /**
@@ -41,13 +43,14 @@ Component({
    */
   data: {
     selectedDay: 0,
-    everyDay: [ ]
+    everyDay: [],
+    today: today
   },
 
   ready() {
-    console.log("day-select ready start")
+    app.log("day-select ready start")
     this._initDay()
-    console.log('day-select ready end')
+    app.log('day-select ready end')
   },
 
   /**
@@ -55,15 +58,18 @@ Component({
    */
   methods: {
     _initDay() {
-      console.log('init day');
+      app.log('init day');
       var day_number = new Date(this.data.year, this.data.month, 0).getDate()
       var every_day = []
       for (var d = 1; d <= day_number; d++) {
+        var week = new Date(this.data.year, this.data.month - 1, d).getDay()
+
         every_day.push({
           id: 'd-' + d,
-          tag: this.data.tags.find(v=> v === d),
+          tag: this.data.tags.find(v => v === d),
           year: this.data.year,
           month: this.data.month,
+          week: uitls.toWeek(week),
           day: d,
         })
       }
@@ -72,10 +78,13 @@ Component({
       })
     },
     _selectDay(e) {
+      app.log(e.target.dataset.item)
       this.setData({
         selectedDay: e.target.dataset.item.day
       })
       this.triggerEvent('selectedDay', e.target.dataset.item, e.option)
+    },
+    _onscroll(e) {
     }
   }
 })
