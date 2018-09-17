@@ -1,7 +1,21 @@
 <!--pages/account-input/account-input.wxml-->
 <view class="form">
-    <md-input input-class="amount" width="100%" placeholder="金额" type="number" bindvaluechange="_amountChanged"/>
+    <swiper indicator-dots="true" 
+            indicator-color="rgba(255, 255, 255, .3)" 
+            indicator-active-color="rgba(255, 255, 255, 1)"
+            class="swiper-bg {{isincome ? 'income' : 'expenses'}}" 
+            bindchange="onSwiperChange" >
+        <swiper-item class="{{isincome ? 'income' : 'expenses'}}" item-id="expenses">
+            <text>支出</text>
+        </swiper-item>
+        <swiper-item class="{{isincome ? 'income' : 'expenses'}}" item-id="income">
+            <text>收入</text>
+        </swiper-item>
+    </swiper>
+    <view class="amount">
+        <md-input active-color="#ffffff" color="#ffffff" width="100%" placeholder="金额" type="number" bindvaluechange="_amountChanged"/>
+    </view>
 </view>
-<footer>
-    <button hover-class="hover" bindtap="save">保存</button>
+<footer bindtap="save">
+  <text> 下一步 </text> 
 </footer>

@@ -84,11 +84,19 @@ page {
     margin: 8rpx 16rpx; 
 }
 
+.income-color {
+    color: #11b719;
+}
+
 .income::before{
     content: '收';
     color: #11b719;
     font-size: 30rpx; 
     margin-right: 16rpx;
+}
+
+.expenses-color {
+    color: #fa4a4d;
 }
 
 .expend::before{
@@ -180,8 +188,7 @@ page {
 .amount {
     font-size: 50rpx;
     font-weight: 200px;
-    /* line-height: 70px; */
-    color: rgba(0, 0, 0, .7);
+    /* color: rgba(0, 0, 0, .7); */
 }
 
 .detail-list ul {

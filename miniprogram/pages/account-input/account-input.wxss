@@ -5,30 +5,71 @@ page {
 
 .form {
     background: white;
-    margin: 8px;
-    padding: 16px;
-    border-radius: 6px;
+    position: relative;
 }
 
 .amount {
-    width: 100%;
-    margin: 16px !important;
-}
-footer {
-    box-sizing: border-box;
-    position: fixed;
-    width: 100%;
-    height: 60px;
-    padding: 0 16px;
-    
-    bottom: 0;
+    position: absolute;
+    float: left;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
 }
 
-button {
-    background: #6244ee;
-    color: rgba(255,255,255, 1);
+footer {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+
+    height: 60px;
+    width: 100%;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .3);
+    background: white;
+    color: rgba(0, 0, 0, .8);
+
+    font-size: 30rpx;
+    flex-wrap: row;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .hover {
     opacity: .7;
+}
+
+.swiper-bg {
+    color: white;
+    padding-top: 16px;
+    height: 800rpx;
+
+    background-color: #ff717a;
+    background: -webkit-linear-gradient(#ff717a, #ff4978);
+    background: linear-gradient(#ff717a, #ff4978);
+
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+
+}
+
+.expenses {
+    display: flex;
+    flex-direction: row; 
+    justify-content: center;
+    align-content: flex-start;
+    background-color: #ff717a;
+    background: -webkit-linear-gradient(#ff717a, #ff4978);
+    background: linear-gradient(#ff717a, #ff4978);
+}
+
+.income {
+    display: flex;
+    flex-direction: row; 
+    justify-content: center;
+    align-content: flex-start;
+    background-color: #69d3cc;
+    background: -webkit-linear-gradient(#69d3cc, #23d4c7);
+    background: linear-gradient(#69d3cc, #23d4c7);
 }

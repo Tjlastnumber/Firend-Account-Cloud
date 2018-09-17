@@ -29,7 +29,8 @@ Page({
         details: [],
         bodyHeight: 0,
         chartHeight: 150,
-        scrollTop: 0
+        scrollTop: 0,
+        hasAccount: []
     },
     bindDateChange(e) {
         var date = e.detail.value
@@ -162,6 +163,11 @@ Page({
             chartHeight: height
         })
     },
+    onReachBottom() {
+        this.setData({
+            chartHeight: 0
+        })
+    },
     getUserInfo: function (e) {
         app.globalData.userInfo = e.detail.userInfo
         this.setData({
@@ -225,13 +231,18 @@ Page({
             month: month,
             day: day
         }) || new modules.Account()
-        let details = Object.keys(account.details).map(key => ({ key, val: account.details[key] }))
+        let details = Object.keys(account.details)
+            .map(key => ({ key, val: account.details[key] }))
         this.setData({
             currentDay: day,
             account: account,
             income: account.income(),
             expenses: account.expenses(),
-            details: details
+            details: details,
+            hasAccount: this.data.accountCollection.getHasDay({
+                year: year,
+                month: month
+            })
         })
     },
     navToAccountInput() {

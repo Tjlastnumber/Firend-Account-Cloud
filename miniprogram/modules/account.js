@@ -19,6 +19,10 @@ const AccountCollection = class {
         return ac ? new Account(ac.account) : undefined
     }
 
+    getHasDay(date) {
+        return __accounts.filter(e => e.year === date.year && e.month === date.month).map(e => e.day)
+    }
+
     isHave = date => __accounts.some(e =>
         e.year === date.year &&
         e.month === date.month &&
@@ -59,10 +63,6 @@ const AccountCollection = class {
     }
 }
 
-/**
- *  
- * @param {Object} options 
- */
 const Account = class {
     constructor(data) {
         this.details = data ? data.details : Object.create(null)
@@ -71,8 +71,7 @@ const Account = class {
     income() {
         var v = Object.keys(this.details).map(key => {
             let detail = this.details[key]
-            let type = detail.type
-            return type > 0 ? detail.amount : 0
+            return detail.type > 0 ? detail.amount : 0
         })
 
         return v.reduce((p, c) => { return p + c }, 0)
@@ -81,8 +80,7 @@ const Account = class {
     expenses() {
         var v = Object.keys(this.details).map(key => {
             let detail = this.details[key]
-            let type = detail.type
-            return type < 0 ? detail.amount : 0
+            return detail.type < 0 ? detail.amount : 0
         })
 
         return v.reduce((p, c) => { return p + c }, 0)
@@ -93,14 +91,14 @@ const Account = class {
     }
 
     add(name, amount) {
-        if (amount === 0) return
+        if (util.toNumber(amount) === 0) return
         const date = new Date()
         const key = date.toISOString()
         _setDetials(this.details, key, name, amount, date)
     }
 
     update(key, name, amount) {
-        if (amount === 0) return
+        if (util.toNumber(amount) === 0) return
         const date = new Date()
         _setDetials(this.details, key, name, amount, date)
     }

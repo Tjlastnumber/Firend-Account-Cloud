@@ -1,4 +1,6 @@
 <!--index.wxml-->
+<wxs src="./index.wxs" module="format" />
+
 <view id="header" class="body body-scale">
   <view class="section">
     <picker mode="date" fields="month" bindchange="bindDateChange">
@@ -11,7 +13,7 @@
   <day-select year="{{selectedYear}}" 
               month="{{selectedMonth}}" 
               day="{{currentDay}}" 
-              tags="{{[31]}}" 
+              tags="{{hasAccount}}" 
               bindselectedDay="_selectedDay"/>
 </view>
 
@@ -31,13 +33,15 @@
 
 <view class="detail-list">
   <text class="title">当日明细</text>
-  <ul style="opacity: {{details.length > 0 ? 1 : 0}}">
-    <li wx:key="{{item.key}}" class="{{item.val.type < 0 ? 'expenses-item' : 'income-item'}}" wx:for="{{details}}">
+  <ul>
+    <li wx:key="{{item.key}}" class="{{item.val.type > 0 ? 'income-item' : 'expenses-item'}}" wx:for="{{details}}">
       <view class="detail-left">
         <text class="detail-title">{{item.val.name}}</text>
         <text class="detail-sub">{{item.val.type > 0 ? '收入': '支出'}}</text>
       </view>
-      <text class="amount">{{item.val.amount}}</text>
+      <view class="amount {{item.val.type > 0 ? 'income-color' : 'expenses-color'}}">
+        {{item.val.type > 0 ? '+' : '-'}}{{format.toMoney(item.val.amount)}}
+      </view>
     </li>
   </ul>
 </view>

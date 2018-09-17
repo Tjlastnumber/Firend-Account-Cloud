@@ -11,7 +11,7 @@ App({
     }
 
     this.globalData = {
-      development: false 
+      development: true 
     }
 
     this.log = text => {

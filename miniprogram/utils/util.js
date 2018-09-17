@@ -56,11 +56,16 @@ const toNumber = (val) => {
   return isNaN(n) ? val : n
 }
 
+const toMoney = v => {
+  return parseFloat(v.toFixed(2)).toLocaleString()
+}
+
 module.exports = {
   formatTime: formatTime,
   today: today,
   isObject: isObject,
   toNumber: toNumber,
   isEmpty: isEmpty,
-  toWeek: toWeek
+  toWeek: toWeek,
+  toMoney: toMoney
 }
