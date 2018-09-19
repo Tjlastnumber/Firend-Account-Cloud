@@ -13,10 +13,10 @@
   font-size: 14px;
   line-height: 61px;
   font-weight: 400;
-  border: 1px solid rgba(0, 0, 0, .24);
+  border: 1px solid var(--border-color);
   border-top: none;
   border-radius: 4px;
-  color: rgba(0, 0, 0, .87);
+  color: var(--input-active-color);
   background: transparent;
   outline: none;
   position: absolute;
@@ -42,7 +42,7 @@
   content: '';
   width: 30px;
   height: 5px;
-  border-top: 1px solid rgba(0, 0, 0, .24);
+  border-top: 1px solid var(--border-color);
   border-top-left-radius: 4px;
   position: absolute;
   left: 0;
@@ -60,7 +60,7 @@
   left: 30px;
   right: 0;
   height: 5px;
-  border-top: 1px solid rgba(0, 0, 0, .24);
+  border-top: 1px solid var(--border-color);
   border-top-right-radius: 4px;
   position: absolute;
   -webkit-transition: all .2s ease-in-out;
@@ -71,7 +71,7 @@
 }
 
 .md-input .title {
-  color: rgba(0, 0, 0, .6);
+  color: var(--input-active-color);
   font-size: 14px;
   font-weight: 500;
   pointer-events: none;
@@ -86,7 +86,7 @@
 }
 
 .md-input input.focus {
-  border: 2px solid var(--input-color, #6200ee);
+  border: 2px solid var(--input-active-color, #6200ee);
   border-top: none;
   padding: 16px 12px 12px;
 }
@@ -96,7 +96,7 @@
 }
 
 .md-input .bar.focus::before {
-  border-top: 2px solid var(--input-color, #6200ee);
+  border-top: 2px solid var(--input-active-color, #6200ee);
 }
 
 .md-input .bar.input-state::after {
@@ -106,7 +106,7 @@
 }
 
 .md-input .bar.focus::after {
-  border-top: 2px solid var(--input-color, #6200ee);
+  border-top: 2px solid var(--input-active-color, #6200ee);
 }
 
 .md-input .title.input-state,
@@ -116,5 +116,5 @@
 }
 
 .md-input .title.focus {
-  color: var(--input-color, #6200ee);
+  color: var(--input-active-color, #6200ee);
 }

@@ -20,6 +20,10 @@ Component({
       type: String,
       value: '100%'
     },
+    activeColor: {
+      type: String,
+      value: 'rgba(0, 0, 0, .24)'
+    },
     color: {
       type: String,
       value: '#6200ee'

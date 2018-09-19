@@ -1,6 +1,8 @@
 // component/day-select/day-select.js
 const uitls = require('../../utils/util.js')
-const today = new Date()
+const today = uitls.today()
+const app = getApp()
+
 
 Component({
   /**
@@ -9,45 +11,47 @@ Component({
   properties: {
     year: {
       type: Number,
-      value: today.getFullYear(),
+      value: 1,
       observer() {
         this._initDay()
       }
     },
     month: {
       type: Number,
-      value: today.getMonth() + 1,
+      value: 1,
       observer() {
         this._initDay()
       }
-    },
-    tags: {
-      type: Array,
-      value: []
     },
     day: {
       type: String,
       value: 1,
       observer(newVal, oldVal) {
         this.setData({
-          selectedDay: newVal
+          istoday: today.year == this.data.year && today.month == this.data.month && today.day == newVal
         })
       }
-    }
+    },
+    tags: {
+      type: Array,
+      value: [],
+      observer() {
+        this._initDay()
+      }
+    },
   },
 
   /**
    * 组件的初始数据
    */
   data: {
-    selectedDay: 0,
-    everyDay: [ ]
+    everyDay: []
   },
 
   ready() {
-    console.log("day-select ready start")
+    app.log("day-select ready start")
     this._initDay()
-    console.log('day-select ready end')
+    app.log('day-select ready end')
   },
 
   /**
@@ -55,15 +59,19 @@ Component({
    */
   methods: {
     _initDay() {
-      console.log('init day');
+      app.log('init day');
       var day_number = new Date(this.data.year, this.data.month, 0).getDate()
       var every_day = []
       for (var d = 1; d <= day_number; d++) {
+        var week = new Date(this.data.year, this.data.month - 1, d).getDay()
+
         every_day.push({
           id: 'd-' + d,
-          tag: this.data.tags.find(v=> v === d),
+          tag: this.data.tags.some(v => v === d),
           year: this.data.year,
           month: this.data.month,
+          week: uitls.toWeek(week),
+          istoday: this.data.year == today.year && this.data.month == today.month && d == today.day,
           day: d,
         })
       }
@@ -73,9 +81,11 @@ Component({
     },
     _selectDay(e) {
       this.setData({
-        selectedDay: e.target.dataset.item.day
+        day: e.target.dataset.item.day
       })
       this.triggerEvent('selectedDay', e.target.dataset.item, e.option)
+    },
+    _onscroll(e) {
     }
   }
 })

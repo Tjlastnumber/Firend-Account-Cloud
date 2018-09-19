@@ -9,14 +9,40 @@ const AccountCollection = class {
 
     get(date) {
         if (!date || !util.isObject(date)) return __accounts
-
         var ac = __accounts.find(e => {
             return e.year === date.year &&
                 e.month === date.month &&
                 e.day === date.day
         })
-
         return ac ? new Account(ac.account) : undefined
+    }
+
+    getMonthIncome(year, month) {
+        const today = util.today()
+        year = year || today.year
+        month = month || today.month
+        let account = __accounts.filter(e => e.year === year && e.month === month)
+        let am = account.map(p => new Account(p.account).income())
+
+        return am.length === 0 ? 0 : am.reduce((p, c) => {
+            return p + c
+        }, 0)
+    }
+
+    getMonthExpenses(year, month) {
+        const today = util.today()
+        year = year || today.year
+        month = month || today.month
+        let account = __accounts.filter(e => e.year === year && e.month === month)
+        let am = account.map(p => new Account(p.account).expenses())
+
+        return am.length === 0 ? 0 : am.reduce((p, c) => {
+            return p + c
+        }, 0)
+    }
+
+    getHasDay(date) {
+        return __accounts.filter(e => e.year === date.year && e.month === date.month).map(e => e.day)
     }
 
     isHave = date => __accounts.some(e =>
@@ -39,11 +65,20 @@ const AccountCollection = class {
             account: account
         }
         if (haveAccount) {
-            __accounts.splice(__accounts.indexOf(haveAccount), 1, ac)
+            __accounts.splice(this.indexOf(date), 1, ac)
         } else {
             __accounts.push(ac)
         }
         return this
+    }
+
+    indexOf(date) {
+        for (let i = 0; i < __accounts.length; i++) {
+            if (__accounts[i].year === date.year &&
+                __accounts[i].month === date.month &&
+                __accounts[i].day === date.day) return i
+        }
+        return -1
     }
 
     /**
@@ -59,10 +94,6 @@ const AccountCollection = class {
     }
 }
 
-/**
- *  
- * @param {Object} options 
- */
 const Account = class {
     constructor(data) {
         this.details = data ? data.details : Object.create(null)
@@ -71,8 +102,7 @@ const Account = class {
     income() {
         var v = Object.keys(this.details).map(key => {
             let detail = this.details[key]
-            let type = detail.type
-            return type > 0 ? detail.amount : 0
+            return detail.type > 0 ? detail.amount : 0
         })
 
         return v.reduce((p, c) => { return p + c }, 0)
@@ -81,8 +111,7 @@ const Account = class {
     expenses() {
         var v = Object.keys(this.details).map(key => {
             let detail = this.details[key]
-            let type = detail.type
-            return type < 0 ? detail.amount : 0
+            return detail.type < 0 ? detail.amount : 0
         })
 
         return v.reduce((p, c) => { return p + c }, 0)
@@ -93,14 +122,14 @@ const Account = class {
     }
 
     add(name, amount) {
-        if (amount === 0) return
+        if (util.toNumber(amount) === 0) return
         const date = new Date()
         const key = date.toISOString()
         _setDetials(this.details, key, name, amount, date)
     }
 
     update(key, name, amount) {
-        if (amount === 0) return
+        if (util.toNumber(amount) === 0) return
         const date = new Date()
         _setDetials(this.details, key, name, amount, date)
     }

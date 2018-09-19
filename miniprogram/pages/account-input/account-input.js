@@ -1,22 +1,25 @@
 // pages/account-input/account-input.js
 const modules = require('../../modules/index.js')
 const util = require('../../utils/util.js')
+
+const app = getApp()
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    accountCollection: new modules.AccountCollection(),
-    account: new modules.Account(),
     someDay: {},
-    amount: 0
+    amount: 0,
+    isincome: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(app.globalData.accountCollection.get())
     let today = util.today()
     const someDay = options.year ? {
       year: util.toNumber(options.year),
@@ -24,14 +27,8 @@ Page({
       day: util.toNumber(options.day)
     } : today
 
-    let accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
-
-    console.log(accountCollection.get())
-
     this.setData({
       someDay: someDay,
-      accountCollection: accountCollection,
-      account: accountCollection.get(someDay) || new modules.Account()
     })
   },
 
@@ -81,14 +78,20 @@ Page({
   onShareAppMessage: function () {
 
   },
+  onSwiperChange(e) {
+    this.setData({
+      isincome: e.detail.current !== 0
+    })
+  },
   save() {
     var someDay = this.data.someDay
-    let account = this.data.accountCollection.get(someDay)
-    account = account || new modules.Account()
-    account.add('测试', this.data.amount)
-    this.data.accountCollection.addOrUpdate(account, someDay)
+    let symbol = this.data.isincome? '+' : '-'
 
-    wx.setStorageSync('Account', this.data.accountCollection.get())
+    let account = app.globalData.accountCollection.get(someDay)
+    account = account || new modules.Account()
+    account.add('', symbol + this.data.amount)
+    app.globalData.accountCollection.addOrUpdate(account, someDay)
+    wx.setStorageSync('Account', app.globalData.accountCollection.get())
     wx.navigateBack({
       delta: 1
     })

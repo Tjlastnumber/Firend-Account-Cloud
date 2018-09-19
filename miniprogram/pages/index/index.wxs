@@ -1,0 +1,9 @@
+var toMoney = function(v) {
+    v = parseFloat(v.toFixed(2)).toLocaleString()
+    v += v.indexOf(".") === -1 ? ".00" : ""
+    return v 
+}
+
+module.exports = {
+    toMoney: toMoney
+}

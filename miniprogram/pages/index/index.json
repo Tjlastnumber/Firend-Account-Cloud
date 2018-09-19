@@ -3,6 +3,7 @@
     "md-input": "/component/md-input/md-input",
     "md-checkbox": "/component/md-checkbox/md-checkbox",
     "count-up": "/component/count-up/count-up",
-    "day-select": "/component/day-select/day-select"
+    "day-select": "/component/day-select/day-select",
+    "ec-canvas": "/component/ec-canvas/ec-canvas"
   }
 }

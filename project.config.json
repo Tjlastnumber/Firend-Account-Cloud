@@ -10,7 +10,7 @@
 	},
 	"appid": "wx08b08fcbb3f7c0bb",
 	"projectname": "Friends%20Account%20Cloud",
-	"libVersion": "2.2.5",
+	"libVersion": "2.3.0",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -31,9 +31,10 @@
 			"current": 0,
 			"list": [
 				{
-					"id": -1,
-					"name": "db guide",
-					"pathName": "pages/databaseGuide/databaseGuide"
+					"id": 0,
+					"name": "account-input",
+					"pathName": "pages/account-input/account-input",
+					"query": ""
 				}
 			]
 		}

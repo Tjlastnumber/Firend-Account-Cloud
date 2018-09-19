@@ -1,5 +1,8 @@
 // component/count-up.js
-var cu = require('../../utils/countUp.js');
+const cu = require('../../utils/countUp.js')
+const util = require('../../utils/util.js')
+const app = getApp()
+
 Component({
   /**
    * 组件的属性列表
@@ -15,7 +18,10 @@ Component({
       decimal: '.', 
       }
     },
-    startVal: Number,
+    startVal: {
+      type: Number,
+      value: 0
+    },
     endVal: {
       type : Number,
       value: 0,
@@ -32,7 +38,7 @@ Component({
    */
   data: {
     count: 0,
-    fontSize: 60,
+    fontSize: 60
   },
 
   ready() {
@@ -44,22 +50,16 @@ Component({
    */
   methods: {
     _countUp(newVal, oldVal) {
-      var countUp = new cu.CountUp(this, 'count', this.data.startVal, this.data.endVal, this.data.decimals, this.data.duration, this.data.options)
+      var newVal = newVal || 0
+      var oldVal = oldVal || 0
+      var countUp = new cu.CountUp(this, 'count', oldVal, newVal, this.data.decimals, this.data.duration, this.data.options)
       if (!countUp.error) {
         countUp.start(() => {
-          this.updateFontSize()
         })
-        console.log(this.data.count)
+        app.log(this.data.count)
       } else {
-        console.error(countUp.error)
+        app.error(countUp.error)
       }
-    },
-    updateFontSize() {
-      // if (this.data.count.length >= 8) {
-      //   this.setData({
-      //     fontSize: this.data.fontSize - 10
-      //   })
-      // }
     }
   }
 })

@@ -1,42 +1,82 @@
 /* component/day-select/day-select.wxss */
 .day-select {
-    width: 100%;
     background: white;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
-    white-space:nowrap;
-    padding: 0;
+    white-space: nowrap;
     z-index: 999;
-    position: relative;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+}
+
+.week-container {
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.day-week {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+}
+
+.week {
+    white-space: nowrap;
+    font-size: 30rpx;
+    float: left;
+    line-height: 15rpx;
+    color: rgba(0,0,0, .4);
+}
+
+.day {
+    padding: 0;
+    margin: 0;
+    line-height: 40rpx;
 }
 
 .day-item {
     display: inline-block;
+    padding: 16px 0;
+    width: 20%;
     color: rgba(0, 0, 0, .6);
     font-size: 60rpx;
     position: relative;
-    padding: 40rpx 30rpx;
     margin: 0;
+    text-align: center;
     -moz-transition: all .2s ease-in-out;
     -ms-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
+}
+
+.day-item i {
+    top: 14px;
+    right: 14px;
+    position: absolute;
 }
 
 .day-item i:after{
     content: ' ';
     background: #FF5A60;
     position: absolute;
+    top: 8px; 
     width: 6px;
     height: 6px;
     border-radius: 50%;
 }
 
+.day-item.today {
+    color: #6200ee;
+}
+
 .day-item.selected {
+    position: relative;
     background: #6200ee;
     color: rgba(255, 255, 255, 1);
-    padding: 40rpx 60rpx 40rpx 55rpx;
     border-radius: 6px 6px 0px 0px; 
+}
+
+.day-item.selected .week {
+    color: rgba(255, 255, 255, 1);
 }

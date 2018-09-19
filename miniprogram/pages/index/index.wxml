@@ -1,4 +1,6 @@
 <!--index.wxml-->
+<wxs src="./index.wxs" module="format" />
+
 <view id="header" class="body body-scale">
   <button 
       open-type="getUserInfo" 
@@ -17,13 +19,13 @@
   <day-select year="{{selectedYear}}" 
               month="{{selectedMonth}}" 
               day="{{currentDay}}" 
-              tags="{{[31]}}" 
+              tags="{{hasAccount}}" 
               bindselectedDay="_selectedDay"/>
 </view>
 
 <view style="background: white; margin: {{bodyHeight + 10}}px 0 0 0;">
   <view id="chart" class="chart"> 
-    <canvas class="lineCanvas" canvas-id="lineCanvas" disable-scroll="true" class="canvas" style="width: 100%; --chartHeight: {{chartHeight}}px"></canvas>
+    <ec-canvas id="month-chart" canvas-id="mychart-line" ec="{{ ec }}"></ec-canvas>
   </view>
 </view>
 <view class='card'>
@@ -35,15 +37,17 @@
   </view>
 </view>
 
-<view class="detail-list" style="opacity: {{details.length > 0 ? 1 : 0}}">
+<view class="detail-list">
   <text class="title">当日明细</text>
   <ul>
-    <li wx:key="{{item.key}}" class="{{item.val.type < 0 ? 'expenses-item' : 'income-item'}}" wx:for="{{details}}">
+    <li wx:key="{{item.key}}" class="{{item.val.type > 0 ? 'income-item' : 'expenses-item'}}" wx:for="{{details}}">
       <view class="detail-left">
         <text class="detail-title">{{item.val.name}}</text>
         <text class="detail-sub">{{item.val.type > 0 ? '收入': '支出'}}</text>
       </view>
-      <text class="amount">{{item.val.amount}}</text>
+      <view class="amount {{item.val.type > 0 ? 'income-color' : 'expenses-color'}}">
+        {{item.val.type > 0 ? '+' : '-'}}{{format.toMoney(item.val.amount)}}
+      </view>
     </li>
   </ul>
 </view>
