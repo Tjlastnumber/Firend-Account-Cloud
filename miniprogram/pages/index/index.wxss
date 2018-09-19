@@ -1,5 +1,16 @@
 page {
-    background: #eeeeee;
+    background: #F6F6F6;
+}
+
+.userinfo-avatar {
+  width: 50rpx;
+  height: 50rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: white;
+  position: absolute;
+  top: 0;
 }
 
 .body{
@@ -14,7 +25,7 @@ page {
 }
 
 .section {
-    padding: 16rpx 0;
+    padding: 20rpx 0;
     background: white;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -213,9 +224,9 @@ page {
     right: 0;
 }
 
-.footer {
+footer {
     position: fixed;
-    height: 40px;
+    height: 60px;
     width: 100%;
     border-top: 1px solid #e0e0e0;
     background: #6244ee;
@@ -227,8 +238,11 @@ page {
     flex-wrap: row;
     justify-content: center;
     align-items: center;
+
+    transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
 }
 
-.footer:hover {
+footer:hover {
     background-color: #6244cc;
 }
