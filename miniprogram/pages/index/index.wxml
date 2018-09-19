@@ -4,7 +4,7 @@
 <view id="header" class="body body-scale">
   <button 
       open-type="getUserInfo" 
-      bindgetuserinfo="onGetUserInfo"
+      bindgetuserinfo="getUserInfo"
       class="userinfo-avatar"
       style="background-image: url({{avatarUrl}})">
   </button>

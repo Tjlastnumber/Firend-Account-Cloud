@@ -1,4 +1,13 @@
 /**app.wxss**/
+page,
+view,
+text,
+picker,
+button,
+input {
+  box-sizing: border-box;
+}
+
 .container {
   position: absolute;
   top: 0;

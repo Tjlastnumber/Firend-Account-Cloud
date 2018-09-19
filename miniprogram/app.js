@@ -13,6 +13,7 @@ App({
 
     this.globalData = {
       debug: false,
+      userInfo: null,
       accountCollection: new modules.AccountCollection()
     }
 

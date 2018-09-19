@@ -49,7 +49,7 @@ function setOption(chart) {
         tooltip: {
             trigger: 'axis',
             // confine: true,
-            position: function(pos, params, dom, rect, size) {
+            position: function (pos, params, dom, rect, size) {
                 var contentSize = size.contentSize
                 var lr = pos[0] < size.viewSize[0] / 2
                 var tb = pos[1] < size.viewSize[1] / 2
@@ -77,11 +77,15 @@ function setOption(chart) {
         series: [{
             name: '收入',
             type: 'line',
-            data: incomeData.data
+            smooth: true,
+            data: incomeData.data,
+            // areaStyle: {}
         }, {
             name: '支出',
             type: 'line',
-            data: expensesData.data
+            smooth: true,
+            data: expensesData.data,
+            // areaStyle: {}
         }]
     };
 
@@ -91,6 +95,7 @@ function setOption(chart) {
 
 Page({
     data: {
+        avatarUrl: 'https://lg-75hzsoiq-1256913426.cos.ap-shanghai.myqcloud.com/user-unlogin.png',
         selectedYear: today.year,
         selectedMonth: today.month,
         currentDay: 0,
@@ -137,36 +142,37 @@ Page({
             }
         })
     },
-    onLoad: function() {
+    onLoad: function () {
         app.log('onLoad')
-
-        /**
-       *    if (app.globalData.userInfo) {
-       *   this.setData({
-       *     userInfo: app.globalData.userInfo,
-       *     hasUserInfo: true
-       *   })
-       * } else if (this.data.canIUse) {
-       *   // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-       *   // 所以此处加入 callback 以防止这种情况
-       *   app.userInfoReadyCallback = res => {
-       *     this.setData({
-       *       userInfo: res.userInfo,
-       *       hasUserInfo: true
-       *     })
-       *   }
-       * } else {
-       *   // 在没有 open-type=getUserInfo 版本的兼容处理
-       *   wx.getUserInfo({
-       *     success: res => {
-       *       app.globalData.userInfo = res.userInfo
-       *       this.setData({
-       *         userInfo: res.userInfo,
-       *         hasUserInfo: true
-       *       })
-       *     }
-       *   })
-        } */
+        if (app.globalData.userInfo) {
+            this.setData({
+                hasuserinfo: true,
+                userinfo: app.globalData.userInfo,
+                avatarUrl: app.globalData.userInfo.avatarUrl
+            })
+        } else if (this.canIUse) {
+            // 由于 getuserinfo 是网络请求，可能会在 page.onload 之后才返回
+            // 所以此处加入 callback 以防止这种情况
+            app.userInfoReadyCallback = res => {
+                this.setData({
+                    hasuserinfo: true,
+                    userinfo: res.userInfo,
+                    avatarUrl: app.globalData.userInfo.avatarUrl
+                })
+            }
+        } else {
+            // 在没有 open-type=getuserinfo 版本的兼容处理
+            wx.getUserInfo({
+                success: res => {
+                    app.globalData.userInfo = res.userInfo
+                    this.setData({
+                        hasuserinfo: true,
+                        userinfo: app.globalData.userInfo,
+                        avatarUrl: app.globalData.userInfo.avatarUrl
+                    })
+                }
+            })
+        }
     },
     onShow() {
         app.log('onShow')
@@ -214,17 +220,15 @@ Page({
             chartHeight: height
         })
     },
-    onReachBottom() {
-        this.setData({
-            chartHeight: 0
-        })
-    },
-    getUserInfo: function(e) {
-        app.globalData.userInfo = e.detail.userInfo
-        this.setData({
-            userInfo: e.detail.userInfo,
-            hasUserInfo: true
-        })
+    getUserInfo: function (e) {
+        if (!this.hasUserInfo && e.detail.userInfo) {
+            app.globalData.userInfo = e.detail.userInfo
+            this.setData({
+                hasUserInfo: true,
+                userInfo: e.detail.userInfo,
+                avatarUrl: e.detail.userInfo.avatarUrl
+            })
+        }
     },
     _selectedDay(e) {
         let year = e.detail.year
@@ -254,11 +258,11 @@ Page({
         let query = 'year=' + this.data.selectedYear + '&month=' + this.data.selectedMonth + '&day=' + this.data.currentDay
         wx.navigateTo({
             url: '../account-input/account-input?' + query,
-            success: function(res) {
+            success: function (res) {
             },
-            fail: function() {
+            fail: function () {
             },
-            complete: function() {
+            complete: function () {
             }
         })
     }
