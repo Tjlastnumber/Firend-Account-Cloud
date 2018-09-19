@@ -19,7 +19,7 @@
 
 <view style="background: white; margin: {{bodyHeight + 10}}px 0 0 0;">
   <view id="chart" class="chart"> 
-    <canvas class="lineCanvas" canvas-id="lineCanvas" disable-scroll="true" class="canvas" style="width: 100%; --chartHeight: {{chartHeight}}px"></canvas>
+    <ec-canvas id="month-chart" canvas-id="mychart-line" ec="{{ ec }}"></ec-canvas>
   </view>
 </view>
 <view class='card'>

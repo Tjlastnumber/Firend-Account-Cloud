@@ -1,3 +1,4 @@
+const modules = require('./modules/index.js')
 //app.js
 App({
   onLaunch: function () {
@@ -11,15 +12,16 @@ App({
     }
 
     this.globalData = {
-      development: true 
+      debug: false,
+      accountCollection: new modules.AccountCollection()
     }
 
     this.log = text => {
-      if (this.globalData.development) console.log(text)
+      if (this.globalData.debug) console.log(text)
     }
 
     this.error = text => {
-      if (this.globalData.development) console.error(text)
+      if (this.globalData.debug) console.error(text)
     }
   }
 })

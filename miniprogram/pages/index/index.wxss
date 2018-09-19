@@ -27,7 +27,7 @@ page {
     position: relative;
     margin: 0 16rpx 16rpx;
     border-radius: 3px;
-    box-shadow: 1px 2px 4px rgba(0, 0, 0, .3);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     background: white;
 
     display: flex;
@@ -57,9 +57,10 @@ page {
 }
 
 .chart {
+    position: relative;
     margin: 8px 0;
     background: white;
-    height: 150px;
+    height: 200px;
     z-index: 1;
 
     /* -moz-transition: all .3s ease-in-out;
@@ -238,4 +239,10 @@ page {
 
 .footer:hover {
     background-color: #6244cc;
+}
+
+ec-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 }

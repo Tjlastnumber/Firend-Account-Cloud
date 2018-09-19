@@ -1,20 +1,96 @@
 //index.js
-const wxCharts = require('../../utils/wxcharts-min.js')
+import * as echarts from '../../component/ec-canvas/echarts';
 const util = require('../../utils/util.js')
 const modules = require('../../modules/index.js')
 //获取应用实例
 const app = getApp()
-var lineChart = null
-var options = {
-    useEasing: true,
-    useGrouping: true,
-    separator: ',',
-    decimal: '.',
-};
 const today = util.today()
+let _selected_year
+
+function createIncomeData() {
+    var categories = [];
+    var data = [];
+    for (var i = 0; i < 12; i++) {
+        categories.push((i + 1) + '月');
+        data.push(app.globalData.accountCollection.getMonthIncome(_selected_year, i + 1));
+    }
+    return {
+        categories: categories,
+        data: data
+    }
+}
+
+function createExpensesData() {
+    var categories = [];
+    var data = [];
+    for (var i = 0; i < 12; i++) {
+        categories.push((i + 1) + '月');
+        data.push(app.globalData.accountCollection.getMonthExpenses(_selected_year, i + 1));
+    }
+    return {
+        categories: categories,
+        data: data
+    }
+}
+
+function setOption(chart) {
+    let incomeData = createIncomeData()
+    let expensesData = createExpensesData()
+
+    var option = {
+        color: ["#11b719", "#fa4a4d"],
+        grid: {
+            containLabel: true,
+            top: '16px',
+            bottom: '8px',
+            left: '8px',
+            right: '8px'
+        },
+        tooltip: {
+            trigger: 'axis',
+            // confine: true,
+            position: function(pos, params, dom, rect, size) {
+                var contentSize = size.contentSize
+                var lr = pos[0] < size.viewSize[0] / 2
+                var tb = pos[1] < size.viewSize[1] / 2
+                var obj = [(lr ? pos[0] : pos[0] - contentSize[0]), (tb ? pos[1] : pos[1] - contentSize[1])]
+                return obj;
+            },
+            formatter: `{b0}
+{a0}: {c0}
+{a1}: {c1}`
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: incomeData.categories,
+            axisLine: {
+                lineStyle: {
+                    type: 'solid'
+                }
+            }
+        },
+        yAxis: {
+            x: 'center',
+            type: 'value'
+        },
+        series: [{
+            name: '收入',
+            type: 'line',
+            data: incomeData.data
+        }, {
+            name: '支出',
+            type: 'line',
+            data: expensesData.data
+        }]
+    };
+
+    chart.setOption(option);
+    return chart;
+}
+
 Page({
     data: {
-        accountCollection: new modules.AccountCollection(),
         selectedYear: today.year,
         selectedMonth: today.month,
         currentDay: 0,
@@ -23,14 +99,22 @@ Page({
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         checked: true,
         date: util.formatTime(new Date()),
-        account: new modules.Account(),
         income: 0,
         expenses: 0,
         details: [],
         bodyHeight: 0,
         chartHeight: 150,
         scrollTop: 0,
-        hasAccount: []
+        hasAccount: [],
+        ec: { lazyLoad: true }
+    },
+    initChart() {
+        this.monthChart.init((canvas, width, height) => {
+            const chart = echarts.init(canvas, null, { width: width, height: height })
+            setOption(chart)
+            this.chart = chart
+            return chart
+        })
     },
     bindDateChange(e) {
         var date = e.detail.value
@@ -53,47 +137,7 @@ Page({
             }
         })
     },
-    // touchHandler: function (e) {
-    //   lineChart.showToolTip(e, {
-    //     // background: '#7cb5ec',
-    //     format: function (item, category) {
-    //       return category + ' ' + item.name + ':' + item.data
-    //     }
-    //   });
-    // },
-    createSimulationData: function () {
-        var categories = [];
-        var data = [];
-        for (var i = 0; i < 12; i++) {
-            categories.push((i + 1) + '月');
-            data.push(Math.random() * (200 - 100) + 10);
-        }
-        return {
-            categories: categories,
-            data: data
-        }
-    },
-    updateData: function () {
-        var simulationData = this.createSimulationData();
-        var series = [{
-            name: '收入',
-            data: simulationData.data,
-            format: function (val, name) {
-                return val.toFixed(2) + '万';
-            }
-        }];
-        lineChart.updateData({
-            categories: simulationData.categories,
-            series: series
-        });
-    },
-    //事件处理函数
-    bindViewTap: function () {
-        wx.navigateTo({
-            url: '../logs/logs'
-        })
-    },
-    onLoad: function () {
+    onLoad: function() {
         app.log('onLoad')
 
         /**
@@ -123,42 +167,49 @@ Page({
        *     }
        *   })
         } */
-        this.createChart();
     },
     onShow() {
         app.log('onShow')
-        let accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
-        this.setData({
-            accountCollection: accountCollection
-        })
+        app.globalData.accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
+        _selected_year = this.data.selectedYear
+        if (this.chart) {
+            this.initChart()
+        }
+        if (this.isReady) {
+            let someDay = {
+                year: this.data.selectedYear,
+                month: this.data.selectedMonth,
+                day: this.data.currentDay === 0 ? today.day : this.data.currentDay
+            }
+            this._selectedDay({
+                detail: someDay,
+            })
+        }
+    },
+    onReady() {
+        app.log('index onReady')
         let someDay = {
             year: this.data.selectedYear,
             month: this.data.selectedMonth,
             day: this.data.currentDay === 0 ? today.day : this.data.currentDay
         }
-        setTimeout(() => {
-            this._selectedDay({
-                detail: someDay
-            })
-        }, 1000);
-    },
-    onReady() {
-        app.log('index onReady')
-
-        setTimeout(() => {
-            wx.createSelectorQuery()
-                .in(this)
-                .select('#header')
-                .boundingClientRect(res => {
-                    this.setData({
-                        bodyHeight: res.height
-                    })
-                }).exec()
-        }, 1500);
+        this.isReady = this._selectedDay({
+            detail: someDay,
+        })
+        wx.createSelectorQuery()
+            .in(this)
+            .select('#header')
+            .boundingClientRect(res => {
+                this.setData({
+                    bodyHeight: res.height
+                })
+            }).exec()
+        this.monthChart = this.selectComponent('#month-chart')
+        this.initChart()
     },
     onPageScroll(e) {
         var maxH = 150
-        var height = e.scrollTop > 75 ? 0 : maxH
+        var height = e.scrollTop > 20 ? 0 : maxH
         this.setData({
             chartHeight: height
         })
@@ -168,65 +219,18 @@ Page({
             chartHeight: 0
         })
     },
-    getUserInfo: function (e) {
+    getUserInfo: function(e) {
         app.globalData.userInfo = e.detail.userInfo
         this.setData({
             userInfo: e.detail.userInfo,
             hasUserInfo: true
         })
     },
-    createChart() {
-        var windowWidth = 320;
-        try {
-            var res = wx.getSystemInfoSync();
-            windowWidth = res.windowWidth;
-        } catch (e) {
-            app.error('getSystemInfoSync failed!');
-        }
-
-        var simulationData = this.createSimulationData();
-        lineChart = new wxCharts({
-            canvasId: 'lineCanvas',
-            type: 'line',
-            categories: simulationData.categories,
-            animation: true,
-            // background: '#f5f5f5',
-            series: [{
-                name: '收入',
-                data: simulationData.data,
-                format: function (val, name) {
-                    return val.toFixed(2) + '元';
-                }
-            }, {
-                name: '支出',
-                data: [2, 0, 0, 3, null, 4, 0, 0, 2, 0],
-                format: function (val, name) {
-                    return val.toFixed(2) + '元';
-                }
-            }],
-            xAxis: {
-                disableGrid: true
-            },
-            yAxis: {
-                format: function (val) {
-                    return val.toFixed(2);
-                },
-                min: 0
-            },
-            width: windowWidth,
-            height: 150,
-            dataLabel: false,
-            dataPointShape: true,
-            extra: {
-                lineStyle: 'curve'
-            }
-        });
-    },
     _selectedDay(e) {
         let year = e.detail.year
         let month = e.detail.month
         let day = e.detail.day
-        let account = this.data.accountCollection.get({
+        let account = app.globalData.accountCollection.get({
             year: year,
             month: month,
             day: day
@@ -235,25 +239,26 @@ Page({
             .map(key => ({ key, val: account.details[key] }))
         this.setData({
             currentDay: day,
-            account: account,
             income: account.income(),
             expenses: account.expenses(),
             details: details,
-            hasAccount: this.data.accountCollection.getHasDay({
+            hasAccount: app.globalData.accountCollection.getHasDay({
                 year: year,
                 month: month
             })
         })
+
+        return true
     },
     navToAccountInput() {
         let query = 'year=' + this.data.selectedYear + '&month=' + this.data.selectedMonth + '&day=' + this.data.currentDay
         wx.navigateTo({
             url: '../account-input/account-input?' + query,
-            success: function (res) {
+            success: function(res) {
             },
-            fail: function () {
+            fail: function() {
             },
-            complete: function () {
+            complete: function() {
             }
         })
     }

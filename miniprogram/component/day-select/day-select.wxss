@@ -15,6 +15,7 @@
 }
 
 .day-week {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -35,17 +36,6 @@
     line-height: 40rpx;
 }
 
-.day-select-day {
-    width: 100%;
-    background: white;
-    white-space:nowrap;
-    padding: 0;
-    position: relative;
-    display: flex;
-    flex-direction: row; 
-    justify-content: space-evenly;
-}
-
 .day-item {
     display: inline-block;
     padding: 16px 0;
@@ -60,10 +50,17 @@
     transition: all .2s ease-in-out;
 }
 
+.day-item i {
+    top: 14px;
+    right: 14px;
+    position: absolute;
+}
+
 .day-item i:after{
     content: ' ';
     background: #FF5A60;
     position: absolute;
+    top: 8px; 
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -74,6 +71,7 @@
 }
 
 .day-item.selected {
+    position: relative;
     background: #6200ee;
     color: rgba(255, 255, 255, 1);
     border-radius: 6px 6px 0px 0px; 

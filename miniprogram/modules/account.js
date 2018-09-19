@@ -9,14 +9,36 @@ const AccountCollection = class {
 
     get(date) {
         if (!date || !util.isObject(date)) return __accounts
-
         var ac = __accounts.find(e => {
             return e.year === date.year &&
                 e.month === date.month &&
                 e.day === date.day
         })
-
         return ac ? new Account(ac.account) : undefined
+    }
+
+    getMonthIncome(year, month) {
+        const today = util.today()
+        year = year || today.year
+        month = month || today.month
+        let account = __accounts.filter(e => e.year === year && e.month === month)
+        let am = account.map(p => new Account(p.account).income())
+
+        return am.length === 0 ? 0 : am.reduce((p, c) => {
+            return p + c
+        }, 0)
+    }
+
+    getMonthExpenses(year, month) {
+        const today = util.today()
+        year = year || today.year
+        month = month || today.month
+        let account = __accounts.filter(e => e.year === year && e.month === month)
+        let am = account.map(p => new Account(p.account).expenses())
+
+        return am.length === 0 ? 0 : am.reduce((p, c) => {
+            return p + c
+        }, 0)
     }
 
     getHasDay(date) {
@@ -43,11 +65,20 @@ const AccountCollection = class {
             account: account
         }
         if (haveAccount) {
-            __accounts.splice(__accounts.indexOf(haveAccount), 1, ac)
+            __accounts.splice(this.indexOf(date), 1, ac)
         } else {
             __accounts.push(ac)
         }
         return this
+    }
+
+    indexOf(date) {
+        for (let i = 0; i < __accounts.length; i++) {
+            if (__accounts[i].year === date.year &&
+                __accounts[i].month === date.month &&
+                __accounts[i].day === date.day) return i
+        }
+        return -1
     }
 
     /**

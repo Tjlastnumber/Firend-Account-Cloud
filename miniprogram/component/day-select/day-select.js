@@ -11,14 +11,14 @@ Component({
   properties: {
     year: {
       type: Number,
-      value: today.year,
+      value: 1,
       observer() {
         this._initDay()
       }
     },
     month: {
       type: Number,
-      value: today.month,
+      value: 1,
       observer() {
         this._initDay()
       }
@@ -28,13 +28,16 @@ Component({
       value: 1,
       observer(newVal, oldVal) {
         this.setData({
-          selectedDay: newVal
+          istoday: today.year == this.data.year && today.month == this.data.month && today.day == newVal
         })
       }
     },
     tags: {
       type: Array,
-      value: []
+      value: [],
+      observer() {
+        this._initDay()
+      }
     },
   },
 
@@ -42,9 +45,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-    selectedDay: 0,
-    everyDay: [],
-    today: today
+    everyDay: []
   },
 
   ready() {
@@ -66,10 +67,11 @@ Component({
 
         every_day.push({
           id: 'd-' + d,
-          tag: this.data.tags.find(v => v === d),
+          tag: this.data.tags.some(v => v === d),
           year: this.data.year,
           month: this.data.month,
           week: uitls.toWeek(week),
+          istoday: this.data.year == today.year && this.data.month == today.month && d == today.day,
           day: d,
         })
       }
@@ -78,9 +80,8 @@ Component({
       })
     },
     _selectDay(e) {
-      app.log(e.target.dataset.item)
       this.setData({
-        selectedDay: e.target.dataset.item.day
+        day: e.target.dataset.item.day
       })
       this.triggerEvent('selectedDay', e.target.dataset.item, e.option)
     },

@@ -13,7 +13,7 @@
         </swiper-item>
     </swiper>
     <view class="amount">
-        <md-input active-color="#ffffff" color="#ffffff" width="100%" placeholder="金额" type="number" bindvaluechange="_amountChanged"/>
+        <md-input active-color="#ffffff" color="#ffffff" width="100%" placeholder="金额" type="digit" bindvaluechange="_amountChanged"/>
     </view>
 </view>
 <footer bindtap="save">
