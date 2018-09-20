@@ -67,14 +67,14 @@
 }
 
 .day-item.today {
-    color: #6200ee;
+    color: #B678FF;
 }
 
 .day-item.selected {
     position: relative;
-    background: #6200ee;
+    background: #B678FF;
     color: rgba(255, 255, 255, 1);
-    border-radius: 6px 6px 0px 0px; 
+    border-radius: 12px 12px 0px 0px; 
 }
 
 .day-item.selected .week {

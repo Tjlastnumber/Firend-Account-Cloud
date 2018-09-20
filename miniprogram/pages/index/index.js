@@ -228,7 +228,11 @@ Page({
                 userInfo: e.detail.userInfo,
                 avatarUrl: e.detail.userInfo.avatarUrl
             })
+            return true
+        } else if (e.detail.errMsg) {
+            return false
         }
+        return true
     },
     _selectedDay(e) {
         let year = e.detail.year
@@ -254,7 +258,10 @@ Page({
 
         return true
     },
-    navToAccountInput() {
+    navToAccountInput(e) {
+        // 授权后才能添加账目
+        if (!this.getUserInfo(e)) return
+
         let query = 'year=' + this.data.selectedYear + '&month=' + this.data.selectedMonth + '&day=' + this.data.currentDay
         wx.navigateTo({
             url: '../account-input/account-input?' + query,

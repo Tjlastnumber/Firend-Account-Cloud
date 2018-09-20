@@ -30,10 +30,10 @@
 </view>
 <view class='card'>
   <view class='left'>
-    <count-up class="income" startVal="0" endVal="{{income}}" decimals="2" duration="1"></count-up>
+    <count-up class="income" endVal="{{income}}" decimals="2" duration="1"></count-up>
   </view>
   <view class="right">
-    <count-up class="expend" startVal="0" endVal="{{expenses}}" decimals="2" duration="1"></count-up>
+    <count-up class="expend" endVal="{{expenses}}" decimals="2" duration="1"></count-up>
   </view>
 </view>
 
@@ -52,6 +52,6 @@
   </ul>
 </view>
 
-<footer class="footer" bindtap="navToAccountInput">
-  <text> 添加账目 </text> 
+<footer class="footer" >
+  <button class="add-account" open-type="getUserInfo" bindgetuserinfo="navToAccountInput"> 添加账目</button>
 </footer>

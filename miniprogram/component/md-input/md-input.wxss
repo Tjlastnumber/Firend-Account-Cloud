@@ -86,7 +86,7 @@
 }
 
 .md-input input.focus {
-  border: 2px solid var(--input-active-color, #6200ee);
+  border: 2px solid var(--input-active-color, #7730fc);
   border-top: none;
   padding: 16px 12px 12px;
 }
@@ -96,7 +96,7 @@
 }
 
 .md-input .bar.focus::before {
-  border-top: 2px solid var(--input-active-color, #6200ee);
+  border-top: 2px solid var(--input-active-color, #7730fc);
 }
 
 .md-input .bar.input-state::after {
@@ -106,7 +106,7 @@
 }
 
 .md-input .bar.focus::after {
-  border-top: 2px solid var(--input-active-color, #6200ee);
+  border-top: 2px solid var(--input-active-color, #7730fc);
 }
 
 .md-input .title.input-state,
@@ -116,5 +116,5 @@
 }
 
 .md-input .title.focus {
-  color: var(--input-active-color, #6200ee);
+  color: var(--input-active-color, #7730fc);
 }

@@ -6,7 +6,7 @@
   type='{{type}}' 
   bindfocus='onfocus' 
   bindblur='onblur' 
-  bindinput='_handlerInput' />
+  bindinput='_handlerInput' auto-focus="{{autoFocus}}"/>
   <span class="bar {{_focus}}" 
   style="--margin-left: {{_placeholderWidth}}px"></span>
   <label id="md-input-placeholder"

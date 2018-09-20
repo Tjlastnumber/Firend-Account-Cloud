@@ -31,6 +31,10 @@ Component({
     inputClass: {
       type: String,
       value: ''
+    },
+    autoFocus: {
+      type: Boolean,
+      value: false
     }
   },
   ready: function() {
