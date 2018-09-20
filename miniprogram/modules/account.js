@@ -92,6 +92,10 @@ const AccountCollection = class {
             return undefined
         }
     }
+
+    isEmpty() {
+        return this.get().length <= 0
+    }
 }
 
 const Account = class {

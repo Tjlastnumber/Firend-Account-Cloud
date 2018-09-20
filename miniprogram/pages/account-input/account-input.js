@@ -1,8 +1,10 @@
 // pages/account-input/account-input.js
 const modules = require('../../modules/index.js')
 const util = require('../../utils/util.js')
+const service = require('../../service/index.js')
 
 const app = getApp()
+const accountService = service.account
 
 Page({
 
@@ -29,6 +31,12 @@ Page({
 
     this.setData({
       someDay: someDay,
+    })
+    wx.setBackgroundColor({
+      backgroundColor: '#ff717a',
+      success: res => console.log(res),
+      fail: err => console.error(err),
+      complete: res => console.log(res)
     })
   },
 
@@ -84,17 +92,60 @@ Page({
     })
   },
   save() {
-    var someDay = this.data.someDay
+    let someDay = this.data.someDay
     let symbol = this.data.isincome? '+' : '-'
-
     let account = app.globalData.accountCollection.get(someDay)
     account = account || new modules.Account()
     account.add('', symbol + this.data.amount)
     app.globalData.accountCollection.addOrUpdate(account, someDay)
     wx.setStorageSync('Account', app.globalData.accountCollection.get())
+    this.saveToCloud()
     wx.navigateBack({
       delta: 1
     })
+  },
+
+  queryAccount() {
+    service.account.select({
+      query: {
+        _openid: app.globalData.openid,
+        success: res => {
+          console.log(res)
+        },
+        fail: err => {
+          console.error(err)
+        }
+      }
+    })
+  },
+
+  // 保存到微信云
+  saveToCloud() {
+    accountService.select({
+      _openid: app.globalData.openid,
+      success: res => {
+        console.log(res)
+      }
+    })
+    const db = wx.cloud.database() 
+    db.collection('account').add({
+      data: {
+        accountCollection: app.globalData.accountCollection.get()
+      },
+      success: res => {
+        wx.showToast({
+          title: '保存成功',
+        }) 
+        console.log('[cloud save] success, _id: ', res._id)
+      }, 
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: '保存失败'
+        })
+        console.error('[cloud save] fail: ', err)
+      }
+    }) 
   },
   _amountChanged(v) {
     this.setData({

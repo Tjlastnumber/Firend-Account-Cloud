@@ -2,6 +2,7 @@
 import * as echarts from '../../component/ec-canvas/echarts';
 const util = require('../../utils/util.js')
 const modules = require('../../modules/index.js')
+const service = require('../../service/index.js')
 //获取应用实例
 const app = getApp()
 const today = util.today()
@@ -146,8 +147,8 @@ Page({
         app.log('onLoad')
         if (app.globalData.userInfo) {
             this.setData({
-                hasuserinfo: true,
-                userinfo: app.globalData.userInfo,
+                hasUserInfo: true,
+                userInfo: app.globalData.userInfo,
                 avatarUrl: app.globalData.userInfo.avatarUrl
             })
         } else if (this.canIUse) {
@@ -155,8 +156,8 @@ Page({
             // 所以此处加入 callback 以防止这种情况
             app.userInfoReadyCallback = res => {
                 this.setData({
-                    hasuserinfo: true,
-                    userinfo: res.userInfo,
+                    hasUserInfo: true,
+                    userInfo: res.userInfo,
                     avatarUrl: app.globalData.userInfo.avatarUrl
                 })
             }
@@ -166,17 +167,24 @@ Page({
                 success: res => {
                     app.globalData.userInfo = res.userInfo
                     this.setData({
-                        hasuserinfo: true,
-                        userinfo: app.globalData.userInfo,
+                        hasUserInfo: true,
+                        userInfo: app.globalData.userInfo,
                         avatarUrl: app.globalData.userInfo.avatarUrl
                     })
                 }
             })
         }
+
+        // 后期存储到Storage中
+        if (!app.globalData.openid) {
+            this.getOpenid()
+        }
     },
     onShow() {
-        app.log('onShow')
         app.globalData.accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
+        if (app.globalData.accountCollection.isEmpty()) {
+            this.getCloudAccount()
+        }
         _selected_year = this.data.selectedYear
         if (this.chart) {
             this.initChart()
@@ -221,18 +229,34 @@ Page({
         })
     },
     getUserInfo: function (e) {
-        if (!this.hasUserInfo && e.detail.userInfo) {
+        if (!this.data.hasUserInfo && e.detail.userInfo) {
             app.globalData.userInfo = e.detail.userInfo
             this.setData({
                 hasUserInfo: true,
                 userInfo: e.detail.userInfo,
                 avatarUrl: e.detail.userInfo.avatarUrl
             })
+            this.getOpenid()
             return true
         } else if (e.detail.errMsg) {
-            return false
+            return e.detail.errMsg === 'getUserInfo:ok'
         }
         return true
+    },
+
+    getOpenid(callback) {
+        wx.cloud.callFunction({
+            name: 'getOpenid',
+            data: { },
+            success: res => {
+                console.log('[cloud function] get user openid: ', res.result.openid)
+                app.globalData.openid = res.result.openid
+                callback()
+            },
+            fail: err => {
+                console.error('[cloud function] get user openid error: ', err)
+            }
+        })
     },
     _selectedDay(e) {
         let year = e.detail.year
@@ -260,17 +284,23 @@ Page({
     },
     navToAccountInput(e) {
         // 授权后才能添加账目
-        if (!this.getUserInfo(e)) return
+        if (!this.getUserInfo(e)) {
+            console.log('未授权')
+            return
+        }
 
         let query = 'year=' + this.data.selectedYear + '&month=' + this.data.selectedMonth + '&day=' + this.data.currentDay
-        wx.navigateTo({
-            url: '../account-input/account-input?' + query,
-            success: function (res) {
-            },
-            fail: function () {
-            },
-            complete: function () {
-            }
-        })
+        wx.navigateTo({ url: '../account-input/account-input?' + query })
+    },
+
+    getCloudAccount() {
+        if (app.globalData.openid) {
+            service.account.select({
+                query: { _openid: app.globalData.openid },
+                success: res => {
+                    app.globalData.accountCollection = new modules.AccountCollection(res.data[0].accountCollection)
+                }
+            })
+        }
     }
 })
