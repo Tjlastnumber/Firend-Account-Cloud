@@ -21,7 +21,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(app.globalData.accountCollection.get())
     let today = util.today()
     const someDay = options.year ? {
       year: util.toNumber(options.year),
@@ -31,12 +30,6 @@ Page({
 
     this.setData({
       someDay: someDay,
-    })
-    wx.setBackgroundColor({
-      backgroundColor: '#ff717a',
-      success: res => console.log(res),
-      fail: err => console.error(err),
-      complete: res => console.log(res)
     })
   },
 
@@ -99,7 +92,28 @@ Page({
     account.add('', symbol + this.data.amount)
     app.globalData.accountCollection.addOrUpdate(account, someDay)
     wx.setStorageSync('Account', app.globalData.accountCollection.get())
-    this.saveToCloud()
+    this.saveToCloud(res => {
+      console.log(res)
+      let _id = res.data.length > 0 ? res.data[0]._id : undefined
+      if (_id) {
+        accountService.setById({
+          id: _id,
+          data: {
+            accountCollection: app.globalData.accountCollection.get(),
+          },
+          success: cloudSuccess,
+          fail: cloudFail
+        })
+      } else {
+        accountService.add({
+          data: {
+            accountCollection: app.globalData.accountCollection.get(),
+          },
+          success: cloudSuccess,
+          fail: cloudFail
+        })
+      }
+    })
     wx.navigateBack({
       delta: 1
     })
@@ -120,32 +134,32 @@ Page({
   },
 
   // 保存到微信云
-  saveToCloud() {
+  saveToCloud(callback) {
     accountService.select({
-      _openid: app.globalData.openid,
-      success: res => {
-        console.log(res)
-      }
-    })
-    const db = wx.cloud.database() 
-    db.collection('account').add({
-      data: {
-        accountCollection: app.globalData.accountCollection.get()
+      query: {
+        _openid: app.globalData.openid,
       },
-      success: res => {
-        wx.showToast({
-          title: '保存成功',
-        }) 
-        console.log('[cloud save] success, _id: ', res._id)
-      }, 
-      fail: err => {
-        wx.showToast({
-          icon: 'none',
-          title: '保存失败'
-        })
-        console.error('[cloud save] fail: ', err)
-      }
-    }) 
+      success: callback
+    })
+    // const db = wx.cloud.database() 
+    // db.collection('account').add({
+    //   data: {
+    //     accountCollection: app.globalData.accountCollection.get()
+    //   },
+    //   success: res => {
+    //     wx.showToast({
+    //       title: '保存成功',
+    //     }) 
+    //     console.log('[cloud save] success, _id: ', res._id)
+    //   }, 
+    //   fail: err => {
+    //     wx.showToast({
+    //       icon: 'none',
+    //       title: '保存失败'
+    //     })
+    //     console.error('[cloud save] fail: ', err)
+    //   }
+    // }) 
   },
   _amountChanged(v) {
     this.setData({
@@ -153,3 +167,18 @@ Page({
     })
   }
 })
+
+function cloudSuccess(res) {
+  wx.showToast({
+    title: '保存成功',
+  })
+  console.log('[cloud save] success, _id: ', res._id)
+}
+
+function cloudFail(err) {
+  wx.showToast({
+    icon: 'none',
+    title: '保存失败'
+  })
+  console.error('[cloud save] fail: ', err)
+}

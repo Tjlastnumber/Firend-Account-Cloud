@@ -1,3 +1,5 @@
+const _ACCOUNT = 'account'
+ 
 function success(res) { }
 
 function fail(err) { console.error(err) }
@@ -13,7 +15,7 @@ const select = (options) => {
     options = defaultOptions(options)
 
     const db = wx.cloud.database()
-    db.collection('account')
+    db.collection(_ACCOUNT)
         .where(options.query)
         .get({
             success: options.success,
@@ -28,7 +30,7 @@ const updateById = options => {
     options = defaultOptions(options)
     options.data = options.data || {}
     const db = wx.cloud.database()
-    db.collection('account')
+    db.collection(_ACCOUNT)
         .doc(options.id)
         .update({
             data: options.data,
@@ -44,7 +46,7 @@ const setById = options => {
     options = defaultOptions(options)
     options.data = options.data || {}
     const db = wx.cloud.database()
-    db.collection('account')
+    db.collection(_ACCOUNT)
         .doc(options.id)
         .set({
             data: options.data,
@@ -57,7 +59,7 @@ const add = options => {
     options = defaultOptions(options)
     options.data = options.data || {}
     const db = wx.cloud.database()
-    db.collection('account')
+    db.collection(_ACCOUNT)
         .add({
             data: options.data,
             success: options.success,
@@ -72,7 +74,7 @@ const removeById = options => {
     options = defaultOptions(options)
     options.data = options.data || {}
     const db = wx.cloud.database()
-    db.collection('account')
+    db.collection(_ACCOUNT)
         .doc(options.id)
         .remove({
             success: options.success,
@@ -82,7 +84,7 @@ const removeById = options => {
 
 module.exports = {
     select: select,
-    update: updateById,
+    updateById: updateById,
     add: add,
     remove: removeById,
     setById: setById

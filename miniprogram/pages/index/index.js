@@ -177,14 +177,11 @@ Page({
 
         // 后期存储到Storage中
         if (!app.globalData.openid) {
-            this.getOpenid()
+            this.getOpenid(this.getCloudAccount)
         }
     },
     onShow() {
         app.globalData.accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
-        if (app.globalData.accountCollection.isEmpty()) {
-            this.getCloudAccount()
-        }
         _selected_year = this.data.selectedYear
         if (this.chart) {
             this.initChart()
@@ -236,7 +233,7 @@ Page({
                 userInfo: e.detail.userInfo,
                 avatarUrl: e.detail.userInfo.avatarUrl
             })
-            this.getOpenid()
+            this.getOpenid(this.getCloudAccount)
             return true
         } else if (e.detail.errMsg) {
             return e.detail.errMsg === 'getUserInfo:ok'
@@ -249,12 +246,13 @@ Page({
             name: 'getOpenid',
             data: { },
             success: res => {
-                console.log('[cloud function] get user openid: ', res.result.openid)
+                app.log('[cloud function] get user openid: ' + res.result.openid)
                 app.globalData.openid = res.result.openid
-                callback()
+                wx.setStorageSync('openid', app.globalData.openid)
+                if (callback) callback()
             },
             fail: err => {
-                console.error('[cloud function] get user openid error: ', err)
+                app.error('[cloud function] get user openid error: ', err)
             }
         })
     },
@@ -294,7 +292,7 @@ Page({
     },
 
     getCloudAccount() {
-        if (app.globalData.openid) {
+        if (app.globalData.accountCollection.isEmpty() && app.globalData.openid) {
             service.account.select({
                 query: { _openid: app.globalData.openid },
                 success: res => {

@@ -12,7 +12,7 @@ App({
     }
 
     this.globalData = {
-      debug: false,
+      debug: true,
       userInfo: null,
       accountCollection: new modules.AccountCollection()
     }
