@@ -238,7 +238,7 @@ footer {
     position: fixed;
     height: 60px;
     width: 100%;
-    background: #B678FF;
+    background: #5856d6;
     bottom: 0;
     display: flex;
     box-shadow: 0 -2px 6px rgba(0,0,0, .24); 
@@ -254,7 +254,7 @@ footer {
 }
 
 footer:hover {
-    background-color: #B678FF;
+    background-color: #5856d6;
 }
 
 ec-canvas {

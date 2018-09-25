@@ -5,6 +5,7 @@
     z-index: 999;
     width: 100%;
     overflow: hidden;
+    
     box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
 }
 
@@ -67,14 +68,16 @@
 }
 
 .day-item.today {
-    color: #B678FF;
+    color: #5856d6;
 }
 
 .day-item.selected {
     position: relative;
-    background: #B678FF;
+    background: #5856d6;
     color: rgba(255, 255, 255, 1);
-    border-radius: 12px 12px 0px 0px; 
+    border-radius: 12px 12px 0px 0px;
+    margin-top: 4px;
+    box-shadow: 0 3px 6px 3px #5856d6cc; 
 }
 
 .day-item.selected .week {
