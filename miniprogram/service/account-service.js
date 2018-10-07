@@ -1,4 +1,6 @@
 const _ACCOUNT = 'account'
+
+const db = wx.cloud.database()
  
 function success(res) { }
 
@@ -14,7 +16,6 @@ const select = (options) => {
 
     options = defaultOptions(options)
 
-    const db = wx.cloud.database()
     db.collection(_ACCOUNT)
         .where(options.query)
         .get({
@@ -29,7 +30,6 @@ const updateById = options => {
     }
     options = defaultOptions(options)
     options.data = options.data || {}
-    const db = wx.cloud.database()
     db.collection(_ACCOUNT)
         .doc(options.id)
         .update({
@@ -45,7 +45,6 @@ const setById = options => {
     }
     options = defaultOptions(options)
     options.data = options.data || {}
-    const db = wx.cloud.database()
     db.collection(_ACCOUNT)
         .doc(options.id)
         .set({
@@ -58,7 +57,6 @@ const setById = options => {
 const add = options => {
     options = defaultOptions(options)
     options.data = options.data || {}
-    const db = wx.cloud.database()
     db.collection(_ACCOUNT)
         .add({
             data: options.data,
@@ -73,7 +71,6 @@ const removeById = options => {
     }
     options = defaultOptions(options)
     options.data = options.data || {}
-    const db = wx.cloud.database()
     db.collection(_ACCOUNT)
         .doc(options.id)
         .remove({

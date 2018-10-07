@@ -3,11 +3,13 @@
 
 <view id="header" class="body body-scale">
   <button 
+      id="userInfo"
       open-type="getUserInfo" 
       bindgetuserinfo="getUserInfo"
       class="userinfo-avatar"
       style="background-image: url({{avatarUrl}})">
   </button>
+  <label class="userinfo-text" for="userInfo" wx:if="{{!hasUserInfo}}">点击授权</label>
   <view class="section">
     <picker mode="date" fields="month" bindchange="bindDateChange">
       <view class="picker">
@@ -16,9 +18,9 @@
     </picker>
     <i class="arrow"></i>
   </view>
-  <day-select year="{{selectedYear}}" 
-              month="{{selectedMonth}}" 
-              day="{{currentDay}}" 
+  <day-select year="{{selectedDate.year}}" 
+              month="{{selectedDate.month}}" 
+              day="{{selectedDate.day}}" 
               tags="{{hasAccount}}" 
               bindselectedDay="_selectedDay"/>
 </view>
@@ -53,5 +55,6 @@
 </view>
 
 <footer class="footer" >
-  <button class="add-account" open-type="getUserInfo" bindgetuserinfo="navToAccountInput"> 添加账目</button>
+  <button class="add-account" open-type="getUserInfo" bindgetuserinfo="navToAccountInput"> 个人记账 </button>
+  <button class="add-account" open-type="getUserInfo" bindgetuserinfo="navToFirendAccount"> 多人记账 </button>
 </footer>

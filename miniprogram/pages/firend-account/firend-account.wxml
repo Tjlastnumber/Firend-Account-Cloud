@@ -1,0 +1,14 @@
+<!-- miniprogram/pages/firend-account/firend-account.wxml -->
+<view class="avatar-container">
+    <view class="avatar-list">
+        <image class="user-avatar" src="{{userInfo.avatarUrl}}" />
+        <image mode="scaleToFill" 
+            class="avatar" 
+            src="{{item}}" 
+            wx:for="{{avatarUrls}}" 
+            wx:key="{{index}}" 
+            style="{{index !== 0 ? 'margin-left: -20rpx' : ''}}"
+            />
+    </view>
+    <button open-type="share" class="btn-add" style="background-image: url({{shareBtnUrl}})" ></button>
+</view>

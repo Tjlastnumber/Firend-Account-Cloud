@@ -28,13 +28,25 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": 0,
 					"name": "account-input",
 					"pathName": "pages/account-input/account-input",
 					"query": ""
+				},
+				{
+					"id": 1,
+					"name": "firend-account",
+					"pathName": "pages/firend-account/firend-account",
+					"query": "",
+					"scene": "1044",
+					"shareInfo": {
+						"groupName": "测试模拟群0",
+						"shareName": "Q-w2e5n2KFXYdzgf8qcJTgtd0TXaAXYwzNHaRd6h1EE@cr4dev",
+						"shareKey": "mgkZFxDYjd5RlifEZcM4xOIvyjlJOWQDuD_ZSSEhNqYieIanK6AmUo5Bt_qtVFO8GK79ETTE98_OYtmljaLrgw~~"
+					}
 				}
 			]
 		}

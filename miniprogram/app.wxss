@@ -8,6 +8,10 @@ input {
   box-sizing: border-box;
 }
 
+page {
+    background: #F6F6F6;
+}
+
 .container {
   position: absolute;
   top: 0;
@@ -22,3 +26,28 @@ input {
 }
 
 button {}
+
+.userinfo-avatar {
+  width: 50rpx;
+  height: 50rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, .24);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.24);
+  background-size: cover;
+  background-color: white;
+  position: absolute;
+  top: 0;
+}
+
+.userinfo-text {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  top: 22.5rpx;
+  left: 90rpx;
+  background: transparent !important;
+  color: #5856d6;
+  line-height: normal;
+}

@@ -97,9 +97,11 @@ function setOption(chart) {
 Page({
     data: {
         avatarUrl: 'https://lg-75hzsoiq-1256913426.cos.ap-shanghai.myqcloud.com/user-unlogin.png',
-        selectedYear: today.year,
-        selectedMonth: today.month,
-        currentDay: 0,
+        selectedDate: {
+            year: today.year,
+            month: today.month,
+            day: today.day
+        },
         userInfo: {},
         hasUserInfo: false,
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
@@ -126,32 +128,26 @@ Page({
         var date = e.detail.value
         var year = util.toNumber(date.split('-')[0])
         var month = util.toNumber(date.split('-')[1])
-        var currentDay = (year === today.year &&
+        var day = (year === today.year &&
             month === today.month) ?
             today.day : 1
         this.setData({
             date: date,
-            selectedYear: year,
-            selectedMonth: month
+            selectedDate: { year, month, day}
         })
 
         this._selectedDay({
-            detail: {
-                year: year,
-                month: month,
-                day: currentDay
-            }
+            detail: { year, month, day }
         })
     },
     onLoad: function () {
-        app.log('onLoad')
         if (app.globalData.userInfo) {
             this.setData({
                 hasUserInfo: true,
                 userInfo: app.globalData.userInfo,
                 avatarUrl: app.globalData.userInfo.avatarUrl
             })
-        } else if (this.canIUse) {
+        } else if (this.data.canIUse) {
             // 由于 getuserinfo 是网络请求，可能会在 page.onload 之后才返回
             // 所以此处加入 callback 以防止这种情况
             app.userInfoReadyCallback = res => {
@@ -175,37 +171,25 @@ Page({
             })
         }
 
-        // 后期存储到Storage中
         if (!app.globalData.openid) {
-            this.getOpenid(this.getCloudAccount)
+            this.getOpenid().then(() => this.getCloudAccount())
         }
     },
     onShow() {
         app.globalData.accountCollection = new modules.AccountCollection(wx.getStorageSync('Account'))
-        _selected_year = this.data.selectedYear
+        _selected_year = this.data.selectedDate.year
+        if (this.isReady) {
+            this._selectedDay({
+                detail: { ...this.data.selectedDate }
+            })
+        }
         if (this.chart) {
             this.initChart()
         }
-        if (this.isReady) {
-            let someDay = {
-                year: this.data.selectedYear,
-                month: this.data.selectedMonth,
-                day: this.data.currentDay === 0 ? today.day : this.data.currentDay
-            }
-            this._selectedDay({
-                detail: someDay,
-            })
-        }
     },
     onReady() {
-        app.log('index onReady')
-        let someDay = {
-            year: this.data.selectedYear,
-            month: this.data.selectedMonth,
-            day: this.data.currentDay === 0 ? today.day : this.data.currentDay
-        }
         this.isReady = this._selectedDay({
-            detail: someDay,
+            detail: { ...this.data.selectedDate }
         })
         wx.createSelectorQuery()
             .in(this)
@@ -233,7 +217,9 @@ Page({
                 userInfo: e.detail.userInfo,
                 avatarUrl: e.detail.userInfo.avatarUrl
             })
-            this.getOpenid(this.getCloudAccount)
+            if (!app.globalData.openid) {
+                this.getOpenid().then(() => this.getCloudAccount())
+            }
             return true
         } else if (e.detail.errMsg) {
             return e.detail.errMsg === 'getUserInfo:ok'
@@ -241,45 +227,43 @@ Page({
         return true
     },
 
-    getOpenid(callback) {
-        wx.cloud.callFunction({
-            name: 'getOpenid',
-            data: { },
-            success: res => {
-                app.log('[cloud function] get user openid: ' + res.result.openid)
-                app.globalData.openid = res.result.openid
-                wx.setStorageSync('openid', app.globalData.openid)
-                if (callback) callback()
-            },
-            fail: err => {
-                app.error('[cloud function] get user openid error: ', err)
-            }
+    getOpenid() {
+        return new Promise((resolve, reject) => { 
+            wx.cloud.callFunction({
+                name: 'getOpenid',
+                data: { },
+                success: res => {
+                    app.log('[cloud function] get user openid: ' + res.result.openid)
+                    app.globalData.openid = res.result.openid
+                    wx.setStorageSync('openid', app.globalData.openid)
+                    resolve()
+                },
+                fail: err => {
+                    app.error('[cloud function] get user openid error: ', err)
+                    reject()
+                }
+            })
         })
     },
     _selectedDay(e) {
-        let year = e.detail.year
-        let month = e.detail.month
-        let day = e.detail.day
-        let account = app.globalData.accountCollection.get({
-            year: year,
-            month: month,
-            day: day
-        }) || new modules.Account()
+        let date = e ? { ...e.detail } : { ...today }
+        let account = app.globalData.accountCollection.get(date) || new modules.Account()
         let details = Object.keys(account.details)
             .map(key => ({ key, val: account.details[key] }))
         this.setData({
-            currentDay: day,
+            'selectedDate.day': date.day,
             income: account.income(),
             expenses: account.expenses(),
             details: details,
             hasAccount: app.globalData.accountCollection.getHasDay({
-                year: year,
-                month: month
+                year: date.year,
+                month: date.month
             })
         })
 
         return true
     },
+
     navToAccountInput(e) {
         // 授权后才能添加账目
         if (!this.getUserInfo(e)) {
@@ -287,8 +271,17 @@ Page({
             return
         }
 
-        let query = 'year=' + this.data.selectedYear + '&month=' + this.data.selectedMonth + '&day=' + this.data.currentDay
+        let query = 'year=' + this.data.selectedDate.year + '&month=' + this.data.selectedDate.month + '&day=' + this.data.selectedDate.day
         wx.navigateTo({ url: '../account-input/account-input?' + query })
+    },
+
+    navToFirendAccount(e) {
+        if (!this.getUserInfo(e)) {
+            console.log('未授权')
+            return
+        }
+
+        wx.navigateTo({ url: '../firend-account/firend-account' })
     },
 
     getCloudAccount() {
@@ -297,6 +290,9 @@ Page({
                 query: { _openid: app.globalData.openid },
                 success: res => {
                     app.globalData.accountCollection = new modules.AccountCollection(res.data[0].accountCollection)
+                    wx.setStorageSync('Account', app.globalData.accountCollection.get())
+                    this._selectedDay()
+                    this.initChart()
                 }
             })
         }

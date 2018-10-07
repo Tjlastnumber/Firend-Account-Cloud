@@ -2,7 +2,8 @@
   "cloud": true,
   "pages": [
     "pages/index/index",
-    "pages/account-input/account-input"
+    "pages/account-input/account-input",
+    "pages/firend-account/firend-account"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
